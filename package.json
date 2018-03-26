@@ -1,7 +1,7 @@
 {
   "name": "hubot-pollen",
   "description": "Retrieves the latest from the Pollen.com API",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Stephen Yeargin <stephen@yearg.in>",
   "license": "MIT",
   "keywords": "hubot, hubot-scripts, pollen, allergy",
