@@ -4,9 +4,11 @@ nock = require 'nock'
 
 expect = chai.expect
 
-helper = new Helper('../src/pollen.coffee')
+helper = new Helper [
+  '../src/pollen.coffee'
+]
 
-describe 'pollen', ->
+describe 'hubot-pollen', ->
   beforeEach ->
     process.env.HUBOT_LOG_LEVEL='error'
     process.env.HUBOT_POLLEN_ZIP=37206
