@@ -7,10 +7,10 @@
   "keywords": "hubot, hubot-scripts, pollen, allergy",
   "repository": {
     "type": "git",
-    "url": "git://github.com/hubot-scripts/hubot-pollen.git"
+    "url": "git://github.com/stephenyeargin/hubot-pollen.git"
   },
   "bugs": {
-    "url": "https://github.com/hubot-scripts/hubot-pollen/issues"
+    "url": "https://github.com/stephenyeargin/hubot-pollen/issues"
   },
   "dependencies": {
     "moment": "^2.21.0"
