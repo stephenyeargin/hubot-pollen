@@ -2,7 +2,7 @@
 
 Retrieves the latest forecast from the Pollen.com API.
 
-See [`src/pollen.coffee`](src/pollen.coffee) for full documentation.
+[![npm version](https://badge.fury.io/js/hubot-pollen.svg)](http://badge.fury.io/js/hubot-pollen) [![Build Status](https://travis-ci.org/stephenyeargin/hubot-pollen.png)](https://travis-ci.org/stephenyeargin/hubot-pollen)
 
 ## Installation
 
@@ -22,17 +22,9 @@ Then add **hubot-pollen** to your `external-scripts.json`:
 
 Set the target location by provide a zip code. Defaults to Nashville, TN for demonstration purposes.
 
-Your server:
-
-```
-export HUBOT_POLLEN_ZIP=37203
-```
-
-Heroku:
-
-```
-heroku config:set HUBOT_POLLEN_ZIP=37203
-```
+| Environment Variable  | Required? | Description                         |
+| --------------------- | :-------: | ----------------------------------- |
+| `HUBOT_POLLEN_ZIP`    | No        | The default zip code to query       |
 
 ## Sample Interaction
 
