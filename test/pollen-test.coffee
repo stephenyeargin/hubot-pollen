@@ -24,6 +24,8 @@ describe 'hubot-pollen', ->
   it 'responds to pollen forecast for default location', (done) ->
     nock('https://www.pollen.com')
       .get('/api/forecast/current/pollen/37206')
+      .matchHeader('User-Agent', /Mozilla\/.*/)
+      .matchHeader('Referer', 'https://www.pollen.com/api/forecast/current/pollen/37206')
       .replyWithFile(200, __dirname + '/fixtures/37206.json')
 
     selfRoom = @room
@@ -44,6 +46,8 @@ describe 'hubot-pollen', ->
   it 'responds to pollen forecast plus a zip code', (done) ->
     nock('https://www.pollen.com')
       .get('/api/forecast/current/pollen/90210')
+      .matchHeader('User-Agent', /Mozilla\/.*/)
+      .matchHeader('Referer', 'https://www.pollen.com/api/forecast/current/pollen/90210')
       .replyWithFile(200, __dirname + '/fixtures/90210.json')
 
     selfRoom = @room
@@ -63,6 +67,8 @@ describe 'hubot-pollen', ->
   it 'responds to pollen forecast for a zip code with no results', (done) ->
     nock('https://www.pollen.com')
       .get('/api/forecast/current/pollen/99501')
+      .matchHeader('User-Agent', /Mozilla\/.*/)
+      .matchHeader('Referer', 'https://www.pollen.com/api/forecast/current/pollen/99501')
       .replyWithFile(200, __dirname + '/fixtures/99501.json')
 
     selfRoom = @room
