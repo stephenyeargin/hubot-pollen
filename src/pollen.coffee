@@ -15,6 +15,7 @@ moment = require 'moment'
 
 module.exports = (robot) ->
   apiUrl = 'https://www.pollen.com/api/forecast/current/pollen'
+  userAgentString = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
   defaultZipCode = process.env.HUBOT_POLLEN_ZIP || 37203
 
   robot.respond /pollen$/i, (msg) ->
@@ -25,8 +26,12 @@ module.exports = (robot) ->
 
   getPollenForecast = (zip, msg) ->
     robot.logger.debug 'zip', zip
+    requestHeaders = {
+      'User-Agent': userAgentString,
+      referrer: "#{apiUrl}/#{zip}"
+    }
     robot.http("#{apiUrl}/#{zip}")
-      .header('Referer', "#{apiUrl}/#{zip}")
+      .headers(requestHeaders)
       .get() (err, res, body) ->
         if err
           handleError err, msg
@@ -120,4 +125,5 @@ module.exports = (robot) ->
     return 'Death by Pollen'
 
   handleError = (err, msg) ->
+    robot.logger.error err
     msg.send "Error retrieving forecast: #{err}"
