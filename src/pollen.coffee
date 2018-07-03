@@ -28,7 +28,7 @@ module.exports = (robot) ->
     robot.logger.debug 'zip', zip
     requestHeaders = {
       'User-Agent': userAgentString,
-      referrer: "#{apiUrl}/#{zip}"
+      referer: "#{apiUrl}/#{zip}"
     }
     robot.http("#{apiUrl}/#{zip}")
       .headers(requestHeaders)
