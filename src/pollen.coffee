@@ -53,6 +53,8 @@ module.exports = (robot) ->
     triggers = []
     for own _k, row of forecast.Location.periods[1].Triggers
       triggers.push("#{row.Name}")
+    if triggers.length == 0
+      triggers.push('The pollen season in the area has completed.')
 
     switch robot.adapterName
 
