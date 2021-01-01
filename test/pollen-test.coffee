@@ -42,6 +42,26 @@ describe 'hubot-pollen', ->
       return
     , 1000)
 
+  it 'responds to pollen forecast for default location with no allergens listed', (done) ->
+    nock('https://www.pollen.com')
+      .get('/api/forecast/current/pollen/37206')
+      .matchHeader('User-Agent', /Mozilla\/.*/)
+      .matchHeader('Referer', 'https://www.pollen.com/forecast/current/pollen/37206')
+      .replyWithFile(200, __dirname + '/fixtures/37206-no-triggers.json')
+
+    selfRoom = @room
+    selfRoom.user.say('alice', '@hubot pollen')
+    setTimeout(() ->
+      try
+        expect(selfRoom.messages).to.eql [
+          ['alice', '@hubot pollen']
+          ['hubot', 'Nashville, TN Pollen: 0.1 (Low) - The pollen season in the area has completed.']
+        ]
+        done()
+      catch err
+        done err
+      return
+    , 1000)
 
   it 'responds to pollen forecast plus a zip code', (done) ->
     nock('https://www.pollen.com')
