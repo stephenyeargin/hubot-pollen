@@ -32,6 +32,7 @@ module.exports = (robot) ->
       referer: "#{webUrl}/#{zip}"
     }
     robot.http("#{apiUrl}/#{zip}")
+      .timeout(200)
       .headers(requestHeaders)
       .get() (err, res, body) ->
         if err
