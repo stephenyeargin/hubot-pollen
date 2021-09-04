@@ -2,7 +2,7 @@
 
 Retrieves the latest forecast from the Pollen.com API.
 
-[![npm version](https://badge.fury.io/js/hubot-pollen.svg)](http://badge.fury.io/js/hubot-pollen) [![Build Status](https://travis-ci.org/stephenyeargin/hubot-pollen.png)](https://travis-ci.org/stephenyeargin/hubot-pollen)
+[![npm version](https://badge.fury.io/js/hubot-pollen.svg)](http://badge.fury.io/js/hubot-pollen) [![Build Status](https://app.travis-ci.com/stephenyeargin/hubot-pollen.png)](https://app.travis-ci.com/stephenyeargin/hubot-pollen)
 
 ## Installation
 
