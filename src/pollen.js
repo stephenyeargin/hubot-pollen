@@ -1,16 +1,3 @@
-// Description
-//   Retrieves the latest from the Pollen.com API
-//
-// Configuration:
-//   HUBOT_POLLEN_ZIP - Default zip code of your desired location
-//
-// Commands:
-//   hubot pollen - Retrieve your configured city's pollen forecast.
-//   hubot pollen <zip code> - Retrieve another city's pollen forecast.
-//
-// Author:
-//   stephenyeargin
-
 const moment = require('moment');
 
 module.exports = (robot) => {
@@ -65,66 +52,78 @@ module.exports = (robot) => {
   const formatForecast = (forecast) => {
     // Send default message if no forecast available
     let payload;
-    if (!forecast.Location.DisplayLocation) {
-      return `${forecast.Location.ZIP} Pollen: No forecast available.`;
+    if (
+      !forecast.Location
+      || !forecast.Location.DisplayLocation
+      || !forecast.Location.periods
+      || forecast.Location.periods.length === 0
+    ) {
+      return `${forecast.Location ? forecast.Location.ZIP : 'Unknown'} Pollen: No forecast available.`;
     }
 
-    // Skip to only today's forecast
-    const index = forecast.Location.periods[1].Index;
+    // Skip to only today's forecast (check for structure)
+    const period = forecast.Location.periods[1];
+    if (!period || !period.Index) {
+      return 'Pollen forecast is unavailable for today.';
+    }
+
+    const index = period.Index;
 
     // Allergens list
     const triggers = [];
-    Object.keys(forecast.Location.periods[1].Triggers || {}).forEach((k) => {
-      const row = forecast.Location.periods[1].Triggers[k];
-      triggers.push(`${row.Name}`);
-    });
+    if (period.Triggers) {
+      Object.keys(period.Triggers).forEach((k) => {
+        const row = period.Triggers[k];
+        if (row && row.Name) {
+          triggers.push(`${row.Name}`);
+        }
+      });
+    }
+
     if (triggers.length === 0) {
       triggers.push('The pollen season in the area has completed.');
     }
 
-    switch (robot.adapterName) {
+    if (robot.adapterName?.includes('slack')) {
       // Slack adapter
-      case 'slack':
-        payload = {
-          attachments: [
-            {
-              fallback: `${forecast.Location.DisplayLocation} Pollen: ${index} (${formatIndexLabel(index)}) - ${triggers.join(', ')}`,
-              title: `${forecast.Location.DisplayLocation} Pollen`,
-              title_link: `https://www.pollen.com/forecast/current/pollen/${forecast.Location.ZIP}`,
-              author_name: 'Pollen.com',
-              author_link: 'https://www.pollen.com/',
-              author_icon: 'https://www.pollen.com/Content/favicon/apple-touch-icon-72x72.png',
-              footer: 'Pollen.com',
-              color: formatIndexColor(index),
-              fields: [
-                {
-                  title: 'Level',
-                  value: formatIndexLabel(index),
-                  short: true,
-                },
-                {
-                  title: 'Count',
-                  value: index,
-                  short: true,
-                },
-                {
-                  title: 'Types',
-                  value: triggers.join(', '),
-                  short: false,
-                },
-              ],
-              ts: moment(forecast.ForecastDate).unix(),
-            },
-          ],
-        };
-        break;
-
-      // IRC/etc. formatting
-      default:
-        payload = `${forecast.Location.DisplayLocation} Pollen: `;
-        payload += `${index} (${formatIndexLabel(index)}) - `;
-        payload += triggers.join(', ');
+      return {
+        attachments: [
+          {
+            fallback: `${forecast.Location.DisplayLocation} Pollen: ${index} (${formatIndexLabel(index)}) - ${triggers.join(', ')}`,
+            title: `${forecast.Location.DisplayLocation} Pollen`,
+            title_link: `https://www.pollen.com/forecast/current/pollen/${forecast.Location.ZIP}`,
+            author_name: 'Pollen.com',
+            author_link: 'https://www.pollen.com/',
+            author_icon: 'https://www.pollen.com/Content/favicon/apple-touch-icon-72x72.png',
+            footer: 'Pollen.com',
+            color: formatIndexColor(index),
+            fields: [
+              {
+                title: 'Level',
+                value: formatIndexLabel(index),
+                short: true,
+              },
+              {
+                title: 'Count',
+                value: index,
+                short: true,
+              },
+              {
+                title: 'Types',
+                value: triggers.join(', '),
+                short: false,
+              },
+            ],
+            ts: moment(forecast.ForecastDate).unix(),
+          },
+        ],
+      };
     }
+
+    // IRC/etc. formatting
+    payload = `${forecast.Location.DisplayLocation} Pollen: `;
+    payload += `${index} (${formatIndexLabel(index)}) - `;
+    payload += triggers.join(', ');
 
     return payload;
   };
@@ -148,11 +147,20 @@ module.exports = (robot) => {
             handleError(`Server responded with HTTP ${res.statusCode}`, msg);
             return;
           }
-          const forecast = JSON.parse(body);
+
+          let forecast;
+          try {
+            forecast = JSON.parse(body);
+          } catch (parseError) {
+            handleError(`Error parsing JSON response: ${parseError}`, msg);
+            return;
+          }
+
           robot.logger.debug('forecast', forecast);
+
           msg.send(formatForecast(forecast));
         } catch (e) {
-          handleError(e, msg);
+          handleError(`Unexpected error: ${e.message}`, msg);
         }
       });
   };
