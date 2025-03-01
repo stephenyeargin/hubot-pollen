@@ -126,4 +126,29 @@ describe('hubot-pollen', () => {
       100,
     );
   });
+
+  it('handles a server error', function (done) {
+    nock('https://www.pollen.com')
+      .get('/api/forecast/current/pollen/37206')
+      .matchHeader('User-Agent', /Mozilla\/.*/)
+      .matchHeader('Referer', 'https://www.pollen.com/forecast/current/pollen/37206')
+      .reply(500);
+
+    const selfRoom = this.room;
+    selfRoom.user.say('alice', '@hubot pollen');
+    setTimeout(
+      () => {
+        try {
+          expect(selfRoom.messages).to.eql([
+            ['alice', '@hubot pollen'],
+            ['hubot', 'Error retrieving forecast: Server responded with HTTP 500'],
+          ]);
+          done();
+        } catch (err) {
+          done(err);
+        }
+      },
+      100,
+    );
+  });
 });

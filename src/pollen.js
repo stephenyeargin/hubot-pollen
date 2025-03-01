@@ -143,9 +143,17 @@ module.exports = (robot) => {
           handleError(err, msg);
           return;
         }
-        const forecast = JSON.parse(body);
-        robot.logger.debug('forecast', forecast);
-        msg.send(formatForecast(forecast));
+        try {
+          if (res.statusCode !== 200) {
+            handleError(`Server responded with HTTP ${res.statusCode}`, msg);
+            return;
+          }
+          const forecast = JSON.parse(body);
+          robot.logger.debug('forecast', forecast);
+          msg.send(formatForecast(forecast));
+        } catch (e) {
+          handleError(e, msg);
+        }
       });
   };
 
