@@ -1,4 +1,17 @@
-const moment = require('moment');
+// Description:
+//   Retrieves the latest pollen forecast from Pollen.com
+//
+// Configuration:
+//   HUBOT_POLLEN_ZIP  Default ZIP code to use when none is provided (e.g., 37203)
+//
+// Commands:
+//   hubot pollen            - Show today's pollen levels for the default ZIP
+//   hubot pollen <zip>      - Show today's pollen levels for the given 5-digit ZIP
+//
+// Author:
+//   stephenyeargin
+
+const dayjs = require('dayjs');
 
 module.exports = (robot) => {
   const apiUrl = 'https://www.pollen.com/api/forecast/current/pollen';
@@ -114,7 +127,7 @@ module.exports = (robot) => {
                 short: false,
               },
             ],
-            ts: moment(forecast.ForecastDate).unix(),
+            ts: dayjs(forecast.ForecastDate).unix(),
           },
         ],
       };

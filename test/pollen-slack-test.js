@@ -1,12 +1,9 @@
 /* global describe beforeEach afterEach it */
 /* eslint-disable func-names */
 const Helper = require('hubot-test-helper');
-const chai = require('chai');
+const assert = require('assert');
 const nock = require('nock');
-
-const {
-  expect,
-} = chai;
+const sinon = require('sinon');
 
 const helper = new Helper([
   'adapters/slack.js',
@@ -18,6 +15,16 @@ describe('hubot-pollen with slack adapter', () => {
     process.env.HUBOT_LOG_LEVEL = 'error';
     process.env.HUBOT_POLLEN_ZIP = 37206;
     nock.disableNetConnect();
+
+    // Mock console methods to suppress output
+    this.consoleStubs = {
+      log: sinon.stub(console, 'log'),
+      error: sinon.stub(console, 'error'),
+      warn: sinon.stub(console, 'warn'),
+      debug: sinon.stub(console, 'debug'),
+      info: sinon.stub(console, 'info'),
+    };
+
     this.room = helper.createRoom();
   });
 
@@ -25,6 +32,10 @@ describe('hubot-pollen with slack adapter', () => {
     delete process.env.HUBOT_LOG_LEVEL;
     delete process.env.HUBOT_POLLEN_ZIP;
     nock.cleanAll();
+
+    // Restore console methods
+    Object.values(this.consoleStubs).forEach((stub) => stub.restore());
+
     this.room.destroy();
   });
 
@@ -40,7 +51,7 @@ describe('hubot-pollen with slack adapter', () => {
     setTimeout(
       () => {
         try {
-          expect(selfRoom.messages).to.eql([
+          assert.deepStrictEqual(selfRoom.messages, [
             ['alice', '@hubot pollen'],
             [
               'hubot',
@@ -100,7 +111,7 @@ describe('hubot-pollen with slack adapter', () => {
     setTimeout(
       () => {
         try {
-          expect(selfRoom.messages).to.eql([
+          assert.deepStrictEqual(selfRoom.messages, [
             ['alice', '@hubot pollen 90210'],
             [
               'hubot',
@@ -159,7 +170,7 @@ describe('hubot-pollen with slack adapter', () => {
     setTimeout(
       () => {
         try {
-          expect(selfRoom.messages).to.eql([
+          assert.deepStrictEqual(selfRoom.messages, [
             ['alice', '@hubot pollen 99501'],
             ['hubot', '99501 Pollen: No forecast available.'],
           ]);
