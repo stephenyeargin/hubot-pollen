@@ -180,7 +180,11 @@ module.exports = (robot) => {
 
           robot.logger.debug('forecast', forecast);
 
-          msg.send(formatForecast(forecast));
+          const formattedMessage = formatForecast(forecast);
+          robot.logger.debug('formattedMessage type', typeof formattedMessage);
+          robot.logger.debug('formattedMessage', formattedMessage);
+          
+          msg.send(formattedMessage);
         } catch (e) {
           handleError(`Unexpected error: ${e.message}`, msg);
         }
