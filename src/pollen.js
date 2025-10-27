@@ -97,7 +97,16 @@ module.exports = (robot) => {
       triggers.push('The pollen season in the area has completed.');
     }
 
-    if (robot.adapterName?.includes('slack')) {
+    // Check for Slack adapter: covers both legacy 'slack' and modern '@hubot-friends/hubot-slack'
+    const isSlack = robot.adapterName?.includes('slack') || robot.adapter?.constructor?.name === 'SlackBot';
+
+    robot.logger.debug('Adapter detection', {
+      adapterName: robot.adapterName,
+      constructorName: robot.adapter?.constructor?.name,
+      isSlack,
+    });
+
+    if (isSlack) {
       // Slack adapter
       return {
         attachments: [
