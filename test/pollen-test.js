@@ -1,12 +1,9 @@
 /* global describe beforeEach afterEach it */
 /* eslint-disable func-names */
 const Helper = require('hubot-test-helper');
-const chai = require('chai');
+const assert = require('assert');
 const nock = require('nock');
-
-const {
-  expect,
-} = chai;
+const sinon = require('sinon');
 
 const helper = new Helper([
   '../src/pollen.js',
@@ -17,6 +14,16 @@ describe('hubot-pollen', () => {
     process.env.HUBOT_LOG_LEVEL = 'error';
     process.env.HUBOT_POLLEN_ZIP = 37206;
     nock.disableNetConnect();
+
+    // Mock console methods to suppress output
+    this.consoleStubs = {
+      log: sinon.stub(console, 'log'),
+      error: sinon.stub(console, 'error'),
+      warn: sinon.stub(console, 'warn'),
+      debug: sinon.stub(console, 'debug'),
+      info: sinon.stub(console, 'info'),
+    };
+
     this.room = helper.createRoom();
   });
 
@@ -24,6 +31,10 @@ describe('hubot-pollen', () => {
     delete process.env.HUBOT_LOG_LEVEL;
     delete process.env.HUBOT_POLLEN_ZIP;
     nock.cleanAll();
+
+    // Restore console methods
+    Object.values(this.consoleStubs).forEach((stub) => stub.restore());
+
     this.room.destroy();
   });
 
@@ -39,7 +50,7 @@ describe('hubot-pollen', () => {
     setTimeout(
       () => {
         try {
-          expect(selfRoom.messages).to.eql([
+          assert.deepStrictEqual(selfRoom.messages, [
             ['alice', '@hubot pollen'],
             ['hubot', 'Nashville, TN Pollen: 8.2 (Medium-High) - Alder, Juniper, Maple'],
           ]);
@@ -64,7 +75,7 @@ describe('hubot-pollen', () => {
     setTimeout(
       () => {
         try {
-          expect(selfRoom.messages).to.eql([
+          assert.deepStrictEqual(selfRoom.messages, [
             ['alice', '@hubot pollen'],
             ['hubot', 'Nashville, TN Pollen: 0.1 (Low) - The pollen season in the area has completed.'],
           ]);
@@ -89,7 +100,7 @@ describe('hubot-pollen', () => {
     setTimeout(
       () => {
         try {
-          expect(selfRoom.messages).to.eql([
+          assert.deepStrictEqual(selfRoom.messages, [
             ['alice', '@hubot pollen 90210'],
             ['hubot', 'Beverly Hills, CA Pollen: 7.2 (Medium) - Alder, Juniper, Ash'],
           ]);
@@ -114,7 +125,7 @@ describe('hubot-pollen', () => {
     setTimeout(
       () => {
         try {
-          expect(selfRoom.messages).to.eql([
+          assert.deepStrictEqual(selfRoom.messages, [
             ['alice', '@hubot pollen 99501'],
             ['hubot', '99501 Pollen: No forecast available.'],
           ]);
@@ -135,16 +146,29 @@ describe('hubot-pollen', () => {
       .reply(500);
 
     const selfRoom = this.room;
+    const loggerErrorStub = sinon.stub(selfRoom.robot.logger, 'error');
+
     selfRoom.user.say('alice', '@hubot pollen');
     setTimeout(
       () => {
         try {
-          expect(selfRoom.messages).to.eql([
+          assert.deepStrictEqual(selfRoom.messages, [
             ['alice', '@hubot pollen'],
             ['hubot', 'Error retrieving forecast: Server responded with HTTP 500'],
           ]);
+
+          // Assert that the error was logged
+          assert(loggerErrorStub.called, 'robot.logger.error should have been called');
+          assert.strictEqual(
+            loggerErrorStub.firstCall.args[0],
+            'Server responded with HTTP 500',
+            'Error message should match',
+          );
+
+          loggerErrorStub.restore();
           done();
         } catch (err) {
+          loggerErrorStub.restore();
           done(err);
         }
       },
