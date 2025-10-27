@@ -72,7 +72,7 @@ describe('hubot-pollen with slack adapter', () => {
                       {
                         short: true,
                         title: 'Count',
-                        value: 8.2,
+                        value: '8.2',
                       },
                       {
                         short: false,
@@ -132,7 +132,7 @@ describe('hubot-pollen with slack adapter', () => {
                       {
                         short: true,
                         title: 'Count',
-                        value: 7.2,
+                        value: '7.2',
                       },
                       {
                         short: false,

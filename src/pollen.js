@@ -118,7 +118,7 @@ module.exports = (robot) => {
               },
               {
                 title: 'Count',
-                value: index,
+                value: index.toFixed(1),
                 short: true,
               },
               {
