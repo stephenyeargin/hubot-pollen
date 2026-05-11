@@ -54,7 +54,7 @@ module.exports = (robot, {
         && forecast.Location.periods
         && forecast.Location.periods[1];
 
-      if (!period || !period.Index) {
+      if (!period || period.Index == null) {
         return {
           source: 'pollen.com',
           location: forecast.Location ? forecast.Location.DisplayLocation : 'Unknown',
