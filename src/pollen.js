@@ -697,7 +697,7 @@ module.exports = (robot) => {
 
   robot.respond(/pollen (.+)$/i, (msg) => getForecast(msg.match[1], msg));
 
-  // eslint-disable-next-line global-require
+   
   require('./ollama-tools')(robot, {
     getOpenMeteoGeocode,
     getOpenMeteoForecast,

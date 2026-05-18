@@ -1,13 +1,11 @@
-/* global describe beforeEach afterEach it */
-/* eslint-disable func-names */
-const Helper = require('hubot-test-helper');
+const Helper = require('./helpers/hubot-room-helper');
 const assert = require('assert');
 const nock = require('nock');
-const sinon = require('sinon');
+const sinon = require('./helpers/sinon-lite');
 
 const helper = new Helper([
-  'adapters/slack.js',
-  '../src/pollen.js',
+  `${__dirname}/adapters/slack.js`,
+  `${__dirname}/../src/pollen.js`,
 ]);
 
 const buildOpenMeteoNoData = (latitude, longitude) => ({

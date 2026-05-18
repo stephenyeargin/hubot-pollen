@@ -1,7 +1,5 @@
-/* global describe before beforeEach afterEach it */
-/* eslint-disable func-names */
 const assert = require('assert');
-const sinon = require('sinon');
+const sinon = require('./helpers/sinon-lite');
 
 const buildOpenMeteoGoodForecast = () => ({
   hourly: {
@@ -58,7 +56,7 @@ describe('ollama-tools', () => {
   let mockRegisteredTools;
 
   before(function () {
-    // eslint-disable-next-line global-require
+     
     ollamaTools = require('../src/ollama-tools');
   });
 

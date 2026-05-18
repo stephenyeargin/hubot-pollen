@@ -4,7 +4,7 @@
 // Configuration:
 //   HUBOT_POLLEN_OLLAMA_ENABLED  Set to 'true' to register pollen tools with hubot-ollama
 
-// eslint-disable-next-line default-param-last
+ 
 module.exports = (robot, {
   getOpenMeteoGeocode,
   getOpenMeteoForecast,
@@ -30,7 +30,7 @@ module.exports = (robot, {
       registry = _registryForTest;
     } else {
       // Resolve the registry once using explicit search paths for linked installs
-      // eslint-disable-next-line global-require
+       
       const path = require('path');
       const registryPath = require.resolve('hubot-ollama/src/tool-registry', {
         paths: [
@@ -40,7 +40,7 @@ module.exports = (robot, {
           process.cwd(),
         ],
       });
-      // eslint-disable-next-line global-require, import/no-unresolved, import/no-dynamic-require
+       
       registry = require(registryPath);
     }
 

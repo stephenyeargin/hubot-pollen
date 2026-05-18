@@ -16,6 +16,7 @@ module.exports = [
         __dirname: 'readonly',
         setTimeout: 'readonly',
         describe: 'readonly',
+        before: 'readonly',
         beforeEach: 'readonly',
         afterEach: 'readonly',
         it: 'readonly',
