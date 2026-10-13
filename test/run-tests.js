@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
+const log = console.log.bind(console);
+const error = console.error.bind(console);
+
 const rootSuite = {
   name: 'root',
   suites: [],
@@ -149,11 +152,9 @@ const run = async () => {
       }
 
       passed += 1;
-      console.log(`ok - ${testName}`);
+      log(`ok - ${testName}`);
     } catch (err) {
       failed += 1;
-      console.error(`not ok - ${testName}`);
-      console.error(err && err.stack ? err.stack : err);
 
       try {
         const afterEachHooks = lineage.slice(1).flatMap((suite) => suite.afterEachHooks).reverse();
@@ -163,11 +164,14 @@ const run = async () => {
       } catch {
         // Ignore teardown errors after a failed test.
       }
+
+      error(`not ok - ${testName}`);
+      error(err && err.stack ? err.stack : err);
     }
   }
 
   const total = passed + failed;
-  console.log(`\n${passed}/${total} passing`);
+  log(`\n${passed}/${total} passing`);
 
   if (failed > 0) {
     process.exitCode = 1;
@@ -175,6 +179,6 @@ const run = async () => {
 };
 
 run().catch((err) => {
-  console.error(err && err.stack ? err.stack : err);
+  error(err && err.stack ? err.stack : err);
   process.exit(1);
 });

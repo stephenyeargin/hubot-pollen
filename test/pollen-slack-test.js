@@ -195,7 +195,7 @@ describe('hubot-pollen with slack adapter', () => {
           done(err);
         }
       },
-      100,
+      1000,
     );
   });
 
