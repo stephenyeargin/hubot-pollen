@@ -1,6 +1,6 @@
 const Helper = require('./helpers/hubot-room-helper');
 const assert = require('assert');
-const nock = require('nock');
+const nock = require('nock').default;
 const sinon = require('./helpers/sinon-lite');
 
 const helper = new Helper([
