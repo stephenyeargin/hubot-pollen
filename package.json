@@ -31,7 +31,7 @@
     "eslint-plugin-n": "^17.23.1",
     "eslint-plugin-promise": "^7.2.1",
     "husky": "^9.1.7",
-    "nock": "^14.0.10"
+    "nock": "^15.0.1"
   },
   "main": "index.js",
   "scripts": {
